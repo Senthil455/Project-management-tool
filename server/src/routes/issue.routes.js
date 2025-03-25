@@ -210,3 +210,17 @@ router.patch(
     if (changed) await issue.save();
     const full = await populateIssue(Issue.findById(issue._id));
     res.json({ issue: serializeIssue(full) });
+  })
+);
+
+// @route   DELETE /api/issues/:id
+// @desc    Delete an issue
+router.delete(
+  '/issues/:id',
+  loadIssue,
+  asyncHandler(async (req, res) => {
+    if (!canEdit(req.issueRole)) {
+      return res.status(403).json({ message: 'Viewers cannot delete issues' });
+    }
+    await req.issue.deleteOne();
+    res.json({ message: 'Issue deleted' });
