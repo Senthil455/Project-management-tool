@@ -97,3 +97,89 @@ router.post(
     const full = await populateProject(Project.findById(project._id));
     res.status(201).json({ project: serializeProject(full) });
   })
+);
+
+// @route   GET /api/projects/:id
+// @desc    Get a single project
+router.get(
+  '/:id',
+  loadProject,
+  asyncHandler(async (req, res) => {
+    res.json({ project: serializeProject(req.project) });
+  })
+);
+
+// @route   PATCH /api/projects/:id
+// @desc    Update project details (admin)
+router.patch(
+  '/:id',
+  loadProject,
+  asyncHandler(async (req, res) => {
+    if (req.projectRole !== 'admin') {
+      return res.status(403).json({ message: 'Only project admins can update project details' });
+    }
+    const { name, description, archived } = req.body;
+    if (name !== undefined) req.project.name = name.trim() || req.project.name;
+    if (description !== undefined) req.project.description = description;
+    if (archived !== undefined) req.project.archived = Boolean(archived);
+    await req.project.save();
+    const full = await populateProject(Project.findById(req.project._id));
+    res.json({ project: serializeProject(full) });
+  })
+);
+
+// @route   DELETE /api/projects/:id
+// @desc    Delete a project (admin)
+router.delete(
+  '/:id',
+  loadProject,
+  asyncHandler(async (req, res) => {
+    if (req.projectRole !== 'admin') {
+      return res.status(403).json({ message: 'Only project admins can delete a project' });
+    }
+    await Issue.deleteMany({ project: req.project._id });
+    await req.project.deleteOne();
+    res.json({ message: 'Project deleted' });
+  })
+);
+
+// @route   POST /api/projects/:id/members
+// @desc    Add a member to the project (admin)
+router.post(
+  '/:id/members',
+  loadProject,
+  asyncHandler(async (req, res) => {
+    if (req.projectRole !== 'admin') {
+      return res.status(403).json({ message: 'Only project admins can manage members' });
+    }
+    const { userId, role } = req.body;
+    if (!userId || !isValidId(userId)) {
+      return res.status(400).json({ message: 'A valid user id is required' });
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    if (req.project.lead.toString() === userId.toString()) {
+      return res.status(400).json({ message: 'The project lead is already a member' });
+    }
+    if (req.project.members.some((m) => m.user.toString() === userId.toString())) {
+      return res.status(400).json({ message: 'User is already a member of this project' });
+    }
+    const allowedRole = ['admin', 'member', 'viewer'].includes(role) ? role : 'member';
+    req.project.members.push({ user: userId, role: allowedRole });
+    await req.project.save();
+    const full = await populateProject(Project.findById(req.project._id));
+    res.status(201).json({ project: serializeProject(full) });
+  })
+);
+
+// @route   PATCH /api/projects/:id/members/:userId
+// @desc    Change a member's role (admin)
+router.patch(
+  '/:id/members/:userId',
+  loadProject,
+  asyncHandler(async (req, res) => {
+    if (req.projectRole !== 'admin') {
+      return res.status(403).json({ message: 'Only project admins can manage members' });
+    }
