@@ -12,10 +12,3 @@
     "@hello-pangea/dnd": "^16.6.0",
     "axios": "^1.7.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.24.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "vite": "^5.3.1"
-  }
