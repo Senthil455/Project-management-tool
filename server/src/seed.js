@@ -130,17 +130,3 @@ const seed = async () => {
 
   created.push(await mkIssue(web, 5, {
     title: 'Migrate to new CMS',
-    description: 'Epic: move all site content to the new headless CMS.',
-    type: 'epic',
-    status: 'todo',
-    priority: 'medium',
-    assignee: null,
-    reporter: john._id,
-    storyPoints: null,
-    labels: ['infrastructure'],
-  }));
-
-  created.push(await mkIssue(mob, 1, {
-    title: 'Set up push notifications',
-    description: 'Configure push notifications for task reminders and mentions.',
-    type: 'task',
