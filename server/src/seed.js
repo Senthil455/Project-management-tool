@@ -129,4 +129,3 @@ const seed = async () => {
   }));
 
   created.push(await mkIssue(web, 5, {
-    title: 'Migrate to new CMS',
