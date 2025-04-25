@@ -195,26 +195,3 @@ const seed = async () => {
     status: 'inprogress',
     priority: 'high',
     assignee: sarah._id,
-    reporter: anna._id,
-    storyPoints: 3,
-    labels: ['design'],
-  }));
-
-  created.push(await mkIssue(mkt, 2, {
-    title: 'Schedule email newsletter',
-    description: 'Draft and schedule the launch newsletter for the campaign.',
-    type: 'task',
-    status: 'todo',
-    priority: 'medium',
-    assignee: anna._id,
-    reporter: anna._id,
-    storyPoints: 2,
-    labels: ['email'],
-  }));
-
-  created.push(await mkIssue(mkt, 3, {
-    title: 'Track campaign analytics',
-    description: 'Set up analytics dashboards to track campaign performance.',
-    type: 'task',
-    status: 'todo',
-    priority: 'low',
