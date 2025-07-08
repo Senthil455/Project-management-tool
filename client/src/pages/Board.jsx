@@ -167,3 +167,108 @@ export default function Board() {
             );
           }}
           style={{ minWidth: 170 }}
+        />
+        <Dropdown
+          options={[
+            { value: ALL, label: 'All priorities' },
+            ...ISSUE_PRIORITIES,
+          ]}
+          value={filterPriority}
+          onChange={setFilterPriority}
+          placeholder="All priorities"
+          renderOption={(o) =>
+            o.value === ALL ? (
+              <span>All priorities</span>
+            ) : (
+              <span className="dropdown-option-row">
+                <PriorityFlag priority={o.value} size={13} />
+                {o.label}
+              </span>
+            )
+          }
+          style={{ minWidth: 150 }}
+        />
+        <Dropdown
+          options={[{ value: ALL, label: 'All types' }, ...ISSUE_TYPES]}
+          value={filterType}
+          onChange={setFilterType}
+          placeholder="All types"
+          renderOption={(o) =>
+            o.value === ALL ? (
+              <span>All types</span>
+            ) : (
+              <span className="dropdown-option-row">
+                <TypeIcon type={o.value} size={13} />
+                {o.label}
+              </span>
+            )
+          }
+          style={{ minWidth: 130 }}
+        />
+        {isFiltered && (
+          <button
+            className="btn btn-sm"
+            onClick={() => {
+              setSearch('');
+              setFilterAssignee(ALL);
+              setFilterPriority(ALL);
+              setFilterType(ALL);
+            }}
+          >
+            Clear filters
+          </button>
+        )}
+        {moving && <span className="filter-moving">Moving...</span>}
+      </div>
+
+      {error && <div className="alert alert-error">{error}</div>}
+
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="board-columns">
+            {columns.map((col) => (
+              <Droppable droppableId={col.value} key={col.value}>
+                {(provided, snapshot) => (
+                  <div
+                    className="board-column"
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    <div className="board-column-head">
+                      <span className={`board-column-dot status-dot-${col.value}`} />
+                      <span className="board-column-title">{col.label}</span>
+                      <span className="board-column-count">{col.issues.length}</span>
+                      {canEdit && (
+                        <button
+                          className="icon-btn board-column-add"
+                          onClick={() => setCreateStatus(col.value)}
+                          title={`Create issue in ${col.label}`}
+                        >
+                          <Icon name="plus" size={14} />
+                        </button>
+                      )}
+                    </div>
+                    <div
+                      className={`board-column-body ${
+                        snapshot.isDraggingOver ? 'board-column-body-dragging' : ''
+                      }`}
+                    >
+                      {col.issues.length === 0 && !snapshot.isDraggingOver && (
+                        <div className="board-column-empty">
+                          {canEdit ? 'Drop issues here' : 'No issues'}
+                        </div>
+                      )}
+                      {col.issues.map((issue, index) => (
+                        <IssueCard
+                          key={issue._id}
+                          issue={issue}
+                          index={index}
+                          onClick={() => setOpenIssue(issue)}
+                        />
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  </div>
+                )}
