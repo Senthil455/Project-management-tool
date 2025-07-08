@@ -114,3 +114,31 @@ export default function Backlog() {
       {loading ? (
         <LoadingScreen />
       ) : (
+        <div className="backlog-groups">
+          {Object.keys(grouped).length === 0 && (
+            <div className="empty-state">
+              <div className="empty-icon">🗂️</div>
+              <h3>No issues found</h3>
+              <p>Create an issue or adjust your filters.</p>
+              {canEdit && (
+                <button className="btn btn-primary" onClick={() => setShowCreate(true)}>
+                  <Icon name="plus" size={16} />
+                  Create issue
+                </button>
+              )}
+            </div>
+          )}
+          {['todo', 'inprogress', 'done'].map((status) => {
+            const items = grouped[status] || [];
+            if (items.length === 0) return null;
+            return (
+              <div className="backlog-group" key={status}>
+                <div className="backlog-group-head">
+                  <span className={`status-dot status-dot-${status}`} />
+                  <strong>{getStatus(status).label}</strong>
+                  <span className="board-column-count">{items.length}</span>
+                </div>
+                <div className="backlog-list">
+                  {items.map((issue, idx) => (
+                    <div className="backlog-row" key={issue._id}>
+                      <IssueCard issue={issue} index={idx} interactive={false} />
