@@ -101,3 +101,19 @@ export default function Sidebar({ onProjectCreated }) {
             setShowCreate(false);
             loadProjects();
             if (onProjectCreated) onProjectCreated(project);
+            navigate(`/project/${project._id}/board`);
+          }}
+        />
+      )}
+    </aside>
+  );
+}
+
+export const hashColor = (str) => {
+  const colors = ['#0052CC', '#00B8D9', '#36B37E', '#FF8B00', '#FF5630', '#6554C0', '#2684FF', '#00875A', '#BF2600', '#5243AA'];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+};
