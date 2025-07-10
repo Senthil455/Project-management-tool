@@ -183,3 +183,45 @@ router.patch(
     if (req.projectRole !== 'admin') {
       return res.status(403).json({ message: 'Only project admins can manage members' });
     }
+    const { userId } = req.params;
+    const { role } = req.body;
+    if (!['admin', 'member', 'viewer'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role' });
+    }
+    const member = req.project.members.find((m) => m.user.toString() === userId);
+    if (!member) {
+      return res.status(404).json({ message: 'Member not found in project' });
+    }
+    member.role = role;
+    await req.project.save();
+    const full = await populateProject(Project.findById(req.project._id));
+    res.json({ project: serializeProject(full) });
+  })
+);
+
+// @route   DELETE /api/projects/:id/members/:userId
+// @desc    Remove a member from the project (admin)
+router.delete(
+  '/:id/members/:userId',
+  loadProject,
+  asyncHandler(async (req, res) => {
+    if (req.projectRole !== 'admin') {
+      return res.status(403).json({ message: 'Only project admins can manage members' });
+    }
+    const { userId } = req.params;
+    const idx = req.project.members.findIndex((m) => m.user.toString() === userId);
+    if (idx === -1) {
+      return res.status(404).json({ message: 'Member not found in project' });
+    }
+    req.project.members.splice(idx, 1);
+    await req.project.save();
+    await Issue.updateMany(
+      { project: req.project._id, assignee: userId },
+      { $set: { assignee: null } }
+    );
+    const full = await populateProject(Project.findById(req.project._id));
+    res.json({ project: serializeProject(full) });
+  })
+);
+
+export default router;
