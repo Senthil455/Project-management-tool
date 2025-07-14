@@ -272,3 +272,38 @@ export default function Board() {
                     </div>
                   </div>
                 )}
+              </Droppable>
+            ))}
+          </div>
+        </DragDropContext>
+      )}
+
+      {openIssue && (
+        <IssueModal
+          issue={openIssue}
+          project={project}
+          users={users}
+          canEdit={canEdit}
+          onClose={() => setOpenIssue(null)}
+          onUpdated={handleIssueUpdated}
+          onDeleted={(deleted) => {
+            setIssues((prev) => prev.filter((i) => i._id !== deleted._id));
+          }}
+        />
+      )}
+
+      {createStatus && (
+        <CreateIssueModal
+          project={project}
+          users={users}
+          defaultStatus={createStatus}
+          onClose={() => setCreateStatus(null)}
+          onCreated={(created) => {
+            handleIssueCreated(created);
+            setOpenIssue(created);
+          }}
+        />
+      )}
+    </div>
+  );
+}
