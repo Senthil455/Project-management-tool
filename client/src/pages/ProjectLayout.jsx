@@ -56,3 +56,90 @@ export default function ProjectLayout() {
     return (
       <div className="app-shell">
         <Sidebar />
+        <div className="page-error">
+          <div className="alert alert-error">{error}</div>
+          <button className="btn" onClick={loadProject}>
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app-shell">
+      <Sidebar
+        onProjectCreated={() => {
+          refreshProjects();
+        }}
+      />
+      <div className="project-shell">
+        <div className="project-sidebar">
+          <div className="project-header">
+            <div
+              className="project-icon"
+              style={{ background: hashColor(project.key) }}
+            >
+              {project.key.slice(0, 2)}
+            </div>
+            <div className="project-header-info">
+              <strong>{project.name}</strong>
+              <span>{project.key}</span>
+            </div>
+          </div>
+          <nav className="project-nav">
+            <NavLink
+              to={`/project/${project._id}/board`}
+              className={({ isActive }) => `project-nav-link ${isActive ? 'project-nav-link-active' : ''}`}
+            >
+              <Icon name="board" />
+              <span>Board</span>
+            </NavLink>
+            <NavLink
+              to={`/project/${project._id}/backlog`}
+              className={({ isActive }) => `project-nav-link ${isActive ? 'project-nav-link-active' : ''}`}
+            >
+              <Icon name="backlog" />
+              <span>Backlog</span>
+            </NavLink>
+            {isAdmin && (
+              <NavLink
+                to={`/project/${project._id}/settings`}
+                className={({ isActive }) => `project-nav-link ${isActive ? 'project-nav-link-active' : ''}`}
+              >
+                <Icon name="settings" />
+                <span>Project settings</span>
+              </NavLink>
+            )}
+          </nav>
+          <div className="project-people">
+            <div className="project-people-head">
+              <span>People</span>
+            </div>
+            <div className="project-people-list">
+              <div className="project-person">
+                <Avatar user={project.lead} size={24} />
+                <div className="project-person-info">
+                  <span>{project.lead.name}</span>
+                  <small>Lead</small>
+                </div>
+              </div>
+              {project.members.map((m) => (
+                <div className="project-person" key={m._id}>
+                  <Avatar user={m.user} size={24} />
+                  <div className="project-person-info">
+                    <span>{m.user.name}</span>
+                    <small>{m.role}</small>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="project-content">
+          <Outlet context={{ project, loadProject, canEdit, isAdmin, myRole }} />
+        </div>
+      </div>
+    </div>
+  );
+}
