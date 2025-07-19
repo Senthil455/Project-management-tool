@@ -97,27 +97,3 @@ router.post(
     const full = await populateProject(Project.findById(project._id));
     res.status(201).json({ project: serializeProject(full) });
   })
-);
-
-// @route   GET /api/projects/:id
-// @desc    Get a single project
-router.get(
-  '/:id',
-  loadProject,
-  asyncHandler(async (req, res) => {
-    res.json({ project: serializeProject(req.project) });
-  })
-);
-
-// @route   PATCH /api/projects/:id
-// @desc    Update project details (admin)
-router.patch(
-  '/:id',
-  loadProject,
-  asyncHandler(async (req, res) => {
-    if (req.projectRole !== 'admin') {
-      return res.status(403).json({ message: 'Only project admins can update project details' });
-    }
-    const { name, description, archived } = req.body;
-    if (name !== undefined) req.project.name = name.trim() || req.project.name;
-    if (description !== undefined) req.project.description = description;
