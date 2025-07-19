@@ -11,10 +11,3 @@ import { notFound, errorHandler } from './middleware/error.js';
 dotenv.config();
 connectDB();
 
-const app = express();
-
-app.use(cors());
-app.use(express.json({ limit: '1mb' }));
-
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
-
