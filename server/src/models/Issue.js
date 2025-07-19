@@ -1,53 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-export const ISSUE_TYPES = ['task', 'story', 'bug', 'epic'];
-export const ISSUE_STATUSES = ['todo', 'inprogress', 'done'];
-export const ISSUE_PRIORITIES = ['highest', 'high', 'medium', 'low', 'lowest'];
+const issueSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  type: { type: String, enum: ["task", "bug", "story", "epic"], default: "task" },
+  status: { type: String, enum: ["backlog", "todo", "in_progress", "in_review", "done"], default: "backlog" },
+  priority: { type: String, enum: ["lowest", "low", "medium", "high", "highest"], default: "medium" },
+  project: { type: mongoose.Schema.Types.ObjectId, ref: "Project", required: true },
+  reporter: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  assignees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  order: { type: Number, default: 0 },
+}, { timestamps: true });
 
-const commentSchema = new mongoose.Schema(
-  {
-    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    body: { type: String, required: true, trim: true },
-  },
-  { timestamps: true }
-);
-
-const activitySchema = new mongoose.Schema(
-  {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    action: {
-      type: String,
-      enum: ['created', 'updated', 'commented', 'deleted'],
-      required: true,
-    },
-    field: String,
-    oldValue: String,
-    newValue: String,
-  },
-  { timestamps: true }
-);
-
-const issueSchema = new mongoose.Schema(
-  {
-    project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
-    key: { type: String, required: true, unique: true, trim: true },
-    title: { type: String, required: true, trim: true },
-    description: { type: String, default: '' },
-    type: { type: String, enum: ISSUE_TYPES, default: 'task' },
-    status: { type: String, enum: ISSUE_STATUSES, default: 'todo' },
-    priority: { type: String, enum: ISSUE_PRIORITIES, default: 'medium' },
-    assignee: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
-    reporter: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    storyPoints: { type: Number, default: null },
-    labels: [{ type: String, trim: true }],
-    comments: [commentSchema],
-    activity: [activitySchema],
-    order: { type: Number, default: 0 },
-  },
-  { timestamps: true }
-);
-
-issueSchema.index({ project: 1, status: 1, order: 1 });
-
-const Issue = mongoose.model('Issue', issueSchema);
-export default Issue;
+export default mongoose.model("Issue", issueSchema);
