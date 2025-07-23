@@ -7,8 +7,3 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
-  },
-  "dependencies": {
-    "@hello-pangea/dnd": "^16.6.0",
-    "axios": "^1.7.2",
-    "react": "^18.3.1",
