@@ -41,3 +41,8 @@ export const formatDate = (date) => {
 };
 
 export const formatDateTime = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return d.toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
