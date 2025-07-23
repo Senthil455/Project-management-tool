@@ -25,8 +25,3 @@ export const PROJECT_ROLES = [
   { value: 'viewer', label: 'Viewer' },
 ];
 
-export const getType = (value) =>
-  ISSUE_TYPES.find((t) => t.value === value) || ISSUE_TYPES[0];
-
-export const getStatus = (value) =>
-  ISSUE_STATUSES.find((s) => s.value === value) || ISSUE_STATUSES[0];
