@@ -55,15 +55,3 @@ export default function App() {
         element={
           <Protected>
             <ProjectLayout />
-          </Protected>
-        }
-      >
-        <Route index element={<Navigate to="board" replace />} />
-        <Route path="board" element={<Board />} />
-        <Route path="backlog" element={<Backlog />} />
-        <Route path="settings" element={<ProjectSettings />} />
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-  );
-}
