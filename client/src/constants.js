@@ -25,3 +25,19 @@ export const PROJECT_ROLES = [
   { value: 'viewer', label: 'Viewer' },
 ];
 
+export const getType = (value) =>
+  ISSUE_TYPES.find((t) => t.value === value) || ISSUE_TYPES[0];
+
+export const getStatus = (value) =>
+  ISSUE_STATUSES.find((s) => s.value === value) || ISSUE_STATUSES[0];
+
+export const getPriority = (value) =>
+  ISSUE_PRIORITIES.find((p) => p.value === value) || ISSUE_PRIORITIES[2];
+
+export const formatDate = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+export const formatDateTime = (date) => {
