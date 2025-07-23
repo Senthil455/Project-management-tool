@@ -30,24 +30,3 @@ export const getType = (value) =>
 
 export const getStatus = (value) =>
   ISSUE_STATUSES.find((s) => s.value === value) || ISSUE_STATUSES[0];
-
-export const getPriority = (value) =>
-  ISSUE_PRIORITIES.find((p) => p.value === value) || ISSUE_PRIORITIES[2];
-
-export const formatDate = (date) => {
-  if (!date) return '';
-  const d = new Date(date);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-};
-
-export const formatDateTime = (date) => {
-  if (!date) return '';
-  const d = new Date(date);
-  return d.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-};
