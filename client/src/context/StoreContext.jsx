@@ -26,3 +26,6 @@ export const StoreProvider = ({ children }) => {
       setProjects(res.data.projects);
     } catch (err) {
       /* handled by interceptor */
+    } finally {
+      setProjectsLoading(false);
+    }
