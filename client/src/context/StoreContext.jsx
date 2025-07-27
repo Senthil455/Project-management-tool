@@ -26,25 +26,3 @@ export const StoreProvider = ({ children }) => {
       setProjects(res.data.projects);
     } catch (err) {
       /* handled by interceptor */
-    } finally {
-      setProjectsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadUsers();
-    loadProjects();
-  }, [loadUsers, loadProjects]);
-
-  const refreshProjects = useCallback(() => {
-    loadProjects();
-  }, [loadProjects]);
-
-  return (
-    <StoreContext.Provider
-      value={{
-        users,
-        usersLoading,
-        projects,
-        projectsLoading,
-        refreshProjects,
