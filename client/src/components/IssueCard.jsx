@@ -23,10 +23,3 @@ export default function IssueCard({ issue, index, onClick, interactive = true })
         </span>
       </div>
       <div className="issue-card-title">{issue.title}</div>
-      {issue.labels && issue.labels.length > 0 && (
-        <div className="issue-card-labels">
-          {issue.labels.slice(0, 3).map((l) => (
-            <span className="issue-label" key={l}>
-              {l}
-            </span>
-          ))}
