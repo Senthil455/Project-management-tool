@@ -66,3 +66,101 @@ export default function CreateIssueModal({ project, users, defaultStatus, onClos
         </label>
         <input
           className="input"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Summarize the issue in one line"
+          required
+          autoFocus
+        />
+        <label className="form-label">Description</label>
+        <textarea
+          className="textarea"
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Add a more detailed description..."
+        />
+        <div className="field-grid">
+          <div className="field">
+            <label className="form-label">Issue type</label>
+            <Dropdown
+              options={ISSUE_TYPES}
+              value={type}
+              onChange={setType}
+              renderOption={(o) => (
+                <span className="dropdown-option-row">
+                  <TypeIcon type={o.value} />
+                  {o.label}
+                </span>
+              )}
+            />
+          </div>
+          <div className="field">
+            <label className="form-label">Status</label>
+            <Dropdown
+              options={ISSUE_STATUSES}
+              value={status}
+              onChange={setStatus}
+              renderOption={(o) => (
+                <span className="dropdown-option-row">
+                  <span className={`status-dot status-dot-${o.value}`} />
+                  {o.label}
+                </span>
+              )}
+            />
+          </div>
+          <div className="field">
+            <label className="form-label">Priority</label>
+            <Dropdown
+              options={ISSUE_PRIORITIES}
+              value={priority}
+              onChange={setPriority}
+              renderOption={(o) => (
+                <span className="dropdown-option-row">
+                  <PriorityFlag priority={o.value} size={14} />
+                  {o.label}
+                </span>
+              )}
+            />
+          </div>
+          <div className="field">
+            <label className="form-label">Assignee</label>
+            <Dropdown
+              options={[{ value: '', label: 'Unassigned' }, ...users.map(userOption)]}
+              value={assignee}
+              onChange={setAssignee}
+              renderOption={(o) => {
+                const u = users.find((x) => x._id === o.value);
+                return (
+                  <span className="dropdown-option-row">
+                    <Avatar user={u} size={20} />
+                    {o.label}
+                  </span>
+                );
+              }}
+            />
+          </div>
+          <div className="field">
+            <label className="form-label">Story points</label>
+            <input
+              type="number"
+              min="0"
+              className="input"
+              value={storyPoints}
+              onChange={(e) => setStoryPoints(e.target.value)}
+              placeholder="e.g. 3"
+            />
+          </div>
+          <div className="field">
+            <label className="form-label">Labels</label>
+            <input
+              className="input"
+              value={labelsInput}
+              onChange={(e) => setLabelsInput(e.target.value)}
+              placeholder="comma, separated"
+            />
+          </div>
+        </div>
+        <div className="form-actions">
+          <button type="button" className="btn" onClick={onClose}>
+            Cancel
