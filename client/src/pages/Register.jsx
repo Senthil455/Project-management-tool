@@ -68,3 +68,46 @@ export default function Register() {
           <p className="auth-card-sub">Start managing your projects in minutes.</p>
           {error && <div className="alert alert-error">{error}</div>}
           <label className="form-label">Full name</label>
+          <input
+            type="text"
+            className="input"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Jane Doe"
+            required
+            autoFocus
+          />
+          <label className="form-label">Email</label>
+          <input
+            type="email"
+            className="input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            required
+          />
+          <label className="form-label">Password</label>
+          <input
+            type="password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="At least 6 characters"
+            required
+          />
+          <label className="form-label">Confirm password</label>
+          <input
+            type="password"
+            className="input"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            placeholder="Repeat your password"
+            required
+          />
+          <button className="btn btn-primary btn-block" type="submit" disabled={loading}>
+            {loading ? 'Creating account...' : 'Create account'}
+          </button>
+          <p className="auth-switch">
+            Already have an account? <Link to="/login">Log in</Link>
+          </p>
+        </form>
