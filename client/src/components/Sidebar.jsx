@@ -98,3 +98,6 @@ export default function Sidebar({ onProjectCreated }) {
         <CreateProjectModal
           onClose={() => setShowCreate(false)}
           onCreated={(project) => {
+            setShowCreate(false);
+            loadProjects();
+            if (onProjectCreated) onProjectCreated(project);
