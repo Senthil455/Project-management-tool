@@ -53,14 +53,3 @@ export default function IssueCard({ issue, index, onClick, interactive = true })
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className={`issue-card-draggable ${snapshot.isDragging ? 'issue-card-dragging' : ''}`}
-          onClick={onClick}
-        >
-          {card}
-        </div>
-      )}
-    </Draggable>
-  );
-}
