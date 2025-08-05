@@ -262,3 +262,89 @@ export default function IssueModal({ issue: initialIssue, project, users, canEdi
                       <span>
                         <strong>{a.user.name}</strong> {activityText(a)}
                       </span>
+                      <small>{formatDateTime(a.createdAt)}</small>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="issue-modal-side">
+            <Field label="Status">
+              {canEdit ? (
+                <Dropdown
+                  options={ISSUE_STATUSES}
+                  value={issue.status}
+                  onChange={(v) => handlePatch({ status: v })}
+                  renderOption={(o) => (
+                    <span className="dropdown-option-row">
+                      <span className={`status-dot status-dot-${o.value}`} />
+                      {o.label}
+                    </span>
+                  )}
+                />
+              ) : (
+                <span className={`status-badge status-badge-${issue.status}`}>
+                  {getStatus(issue.status).label}
+                </span>
+              )}
+            </Field>
+            <Field label="Assignee">
+              {canEdit ? (
+                <Dropdown
+                  options={[{ value: '', label: 'Unassigned' }, ...users.map(userOption)]}
+                  value={issue.assignee ? issue.assignee._id : ''}
+                  onChange={(v) => handlePatch({ assignee: v || null })}
+                  renderOption={(o) => {
+                    const u = findUser(o.value);
+                    return (
+                      <span className="dropdown-option-row">
+                        <Avatar user={u} size={20} />
+                        {o.label}
+                      </span>
+                    );
+                  }}
+                />
+              ) : issue.assignee ? (
+                <Avatar user={issue.assignee} size={24} showName />
+              ) : (
+                'Unassigned'
+              )}
+            </Field>
+            <Field label="Reporter">
+              <Avatar user={issue.reporter} size={24} showName />
+            </Field>
+            <Field label="Priority">
+              {canEdit ? (
+                <Dropdown
+                  options={ISSUE_PRIORITIES}
+                  value={issue.priority}
+                  onChange={(v) => handlePatch({ priority: v })}
+                  renderOption={(o) => (
+                    <span className="dropdown-option-row">
+                      <PriorityFlag priority={o.value} size={14} />
+                      {o.label}
+                    </span>
+                  )}
+                />
+              ) : (
+                <span className="dropdown-option-row">
+                  <PriorityFlag priority={issue.priority} size={14} />
+                  {getPriority(issue.priority).label}
+                </span>
+              )}
+            </Field>
+            <Field label="Issue type">
+              {canEdit ? (
+                <Dropdown
+                  options={ISSUE_TYPES}
+                  value={issue.type}
+                  onChange={(v) => handlePatch({ type: v })}
+                  renderOption={(o) => (
+                    <span className="dropdown-option-row">
+                      <TypeIcon type={o.value} size={14} />
+                      {o.label}
+                    </span>
+                  )}
+                />
