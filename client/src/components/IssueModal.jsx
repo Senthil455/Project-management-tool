@@ -176,3 +176,89 @@ export default function IssueModal({ issue: initialIssue, project, users, canEdi
                   <div className="inline-edit-actions">
                     <button className="btn btn-primary btn-sm" onClick={saveDesc} disabled={saving}>
                       Save
+                    </button>
+                    <button className="btn btn-sm" onClick={() => setEditDesc(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`issue-description ${canEdit ? 'issue-description-editable' : ''}`}
+                  onClick={() => canEdit && setEditDesc(true)}
+                >
+                  {issue.description ? (
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{issue.description}</p>
+                  ) : (
+                    <span className="issue-placeholder">
+                      {canEdit ? 'Add a description...' : 'No description'}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="issue-section">
+              <h4>
+                Comments ({issue.comments.length})
+                <Icon name="comment" size={14} className="section-icon" />
+              </h4>
+              {canEdit && (
+                <form className="comment-form" onSubmit={addComment}>
+                  <Avatar user={project.lead} size={28} />
+                  <div className="comment-input-wrap">
+                    <textarea
+                      className="textarea comment-input"
+                      rows={2}
+                      placeholder="Add a comment..."
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    {comment.trim() && (
+                      <div className="comment-form-actions">
+                        <button type="submit" className="btn btn-primary btn-sm" disabled={commenting}>
+                          {commenting ? 'Posting...' : 'Save'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </form>
+              )}
+              <div className="comment-list">
+                {issue.comments.length === 0 && (
+                  <p className="issue-placeholder">No comments yet.</p>
+                )}
+                {issue.comments.map((c) => (
+                  <div className="comment" key={c._id}>
+                    <Avatar user={c.author} size={28} />
+                    <div className="comment-content">
+                      <div className="comment-meta">
+                        <strong>{c.author.name}</strong>
+                        <span>{formatDateTime(c.createdAt)}</span>
+                      </div>
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{c.body}</p>
+                    </div>
+                    {canEdit && (
+                      <button
+                        className="icon-btn comment-delete"
+                        title="Delete comment"
+                        onClick={() => deleteComment(c._id)}
+                      >
+                        <Icon name="trash" size={14} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="issue-section">
+              <h4>Activity</h4>
+              <div className="activity-list">
+                {[...issue.activity].reverse().map((a, idx) => (
+                  <div className="activity-item" key={a._id || idx}>
+                    <Avatar user={a.user} size={24} />
+                    <div className="activity-content">
+                      <span>
+                        <strong>{a.user.name}</strong> {activityText(a)}
+                      </span>
