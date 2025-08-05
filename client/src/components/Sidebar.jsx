@@ -98,16 +98,3 @@ export default function Sidebar({ onProjectCreated }) {
         <CreateProjectModal
           onClose={() => setShowCreate(false)}
           onCreated={(project) => {
-            setShowCreate(false);
-            loadProjects();
-            if (onProjectCreated) onProjectCreated(project);
-            navigate(`/project/${project._id}/board`);
-          }}
-        />
-      )}
-    </aside>
-  );
-}
-
-export const hashColor = (str) => {
-  const colors = ['#0052CC', '#00B8D9', '#36B37E', '#FF8B00', '#FF5630', '#6554C0', '#2684FF', '#00875A', '#BF2600', '#5243AA'];
