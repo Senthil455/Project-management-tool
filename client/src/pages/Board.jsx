@@ -234,14 +234,3 @@ export default function Board() {
                   <div
                     className="board-column"
                     ref={provided.innerRef}
-                    {...provided.droppableProps}
-                  >
-                    <div className="board-column-head">
-                      <span className={`board-column-dot status-dot-${col.value}`} />
-                      <span className="board-column-title">{col.label}</span>
-                      <span className="board-column-count">{col.issues.length}</span>
-                      {canEdit && (
-                        <button
-                          className="icon-btn board-column-add"
-                          onClick={() => setCreateStatus(col.value)}
-                          title={`Create issue in ${col.label}`}
