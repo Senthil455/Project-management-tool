@@ -167,17 +167,3 @@ export default function Board() {
             );
           }}
           style={{ minWidth: 170 }}
-        />
-        <Dropdown
-          options={[
-            { value: ALL, label: 'All priorities' },
-            ...ISSUE_PRIORITIES,
-          ]}
-          value={filterPriority}
-          onChange={setFilterPriority}
-          placeholder="All priorities"
-          renderOption={(o) =>
-            o.value === ALL ? (
-              <span>All priorities</span>
-            ) : (
-              <span className="dropdown-option-row">
