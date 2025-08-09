@@ -29,3 +29,10 @@ export const StoreProvider = ({ children }) => {
     } finally {
       setProjectsLoading(false);
     }
+  }, []);
+
+  useEffect(() => {
+    loadUsers();
+    loadProjects();
+  }, [loadUsers, loadProjects]);
+
