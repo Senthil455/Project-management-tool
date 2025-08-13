@@ -222,3 +222,100 @@ router.delete(
     if (!canEdit(req.issueRole)) {
       return res.status(403).json({ message: 'Viewers cannot delete issues' });
     }
+    await req.issue.deleteOne();
+    res.json({ message: 'Issue deleted' });
+  })
+);
+
+// @route   POST /api/issues/:id/comments
+// @desc    Add a comment to an issue
+router.post(
+  '/issues/:id/comments',
+  loadIssue,
+  asyncHandler(async (req, res) => {
+    const { body } = req.body;
+    if (!body || !body.trim()) {
+      return res.status(400).json({ message: 'Comment body is required' });
+    }
+    req.issue.comments.push({ author: req.user._id, body: body.trim() });
+    logComment(req.issue, req.user._id);
+    await req.issue.save();
+    const full = await populateIssue(Issue.findById(req.issue._id));
+    res.status(201).json({ issue: serializeIssue(full) });
+  })
+);
+
+// @route   DELETE /api/issues/:id/comments/:commentId
+// @desc    Delete a comment (own comment or admin)
+router.delete(
+  '/issues/:id/comments/:commentId',
+  loadIssue,
+  asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+    const comment = req.issue.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+    const isOwner = comment.author && comment.author._id
+      ? comment.author._id.toString() === req.user._id.toString()
+      : comment.author.toString() === req.user._id.toString();
+    if (!isOwner && req.issueRole !== 'admin') {
+      return res.status(403).json({ message: 'You can only delete your own comments' });
+    }
+    comment.deleteOne();
+    await req.issue.save();
+    const full = await populateIssue(Issue.findById(req.issue._id));
+    res.json({ issue: serializeIssue(full) });
+  })
+);
+
+// @route   PATCH /api/issues/:id/move
+// @desc    Move an issue between statuses / reorder within a column
+router.patch(
+  '/issues/:id/move',
+  loadIssue,
+  asyncHandler(async (req, res) => {
+    if (!canEdit(req.issueRole)) {
+      return res.status(403).json({ message: 'Viewers cannot move issues' });
+    }
+    const { status, orderedIds } = req.body;
+    if (!ISSUE_STATUSES.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    const issue = req.issue;
+
+    if (issue.status !== status) {
+      issue.activity.push({
+        user: req.user._id,
+        action: 'updated',
+        field: 'status',
+        oldValue: issue.status,
+        newValue: status,
+      });
+      issue.status = status;
+    }
+    await issue.save();
+
+    if (Array.isArray(orderedIds) && orderedIds.length) {
+      const validIds = orderedIds.filter((id) => isValidId(id));
+      const colIssues = await Issue.find({
+        project: issue.project,
+        status,
+        _id: { $in: validIds },
+      });
+      for (const col of colIssues) {
+        const index = orderedIds.indexOf(col._id.toString());
+        if (index !== -1) {
+          col.order = index;
+          if (col._id.toString() === issue._id.toString()) col.status = status;
+          await col.save();
+        }
+      }
+    }
+
+    const full = await populateIssue(Issue.findById(issue._id));
+    res.json({ issue: serializeIssue(full) });
+  })
+);
+
+export default router;
