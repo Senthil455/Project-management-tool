@@ -37,3 +37,8 @@ const issueSchema = new mongoose.Schema(
     status: { type: String, enum: ISSUE_STATUSES, default: 'todo' },
     priority: { type: String, enum: ISSUE_PRIORITIES, default: 'medium' },
     assignee: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    reporter: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    storyPoints: { type: Number, default: null },
+    labels: [{ type: String, trim: true }],
+    comments: [commentSchema],
+    activity: [activitySchema],
