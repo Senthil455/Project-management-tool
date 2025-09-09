@@ -21,37 +21,3 @@ const PublicOnly = ({ children }) => {
   if (loading) return <LoadingScreen />;
   if (user) return <Navigate to="/" replace />;
   return children;
-};
-
-export default function App() {
-  return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <PublicOnly>
-            <Login />
-          </PublicOnly>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicOnly>
-            <Register />
-          </PublicOnly>
-        }
-      />
-      <Route
-        path="/"
-        element={
-          <Protected>
-            <Dashboard />
-          </Protected>
-        }
-      />
-      <Route
-        path="/project/:id"
-        element={
-          <Protected>
-            <ProjectLayout />
