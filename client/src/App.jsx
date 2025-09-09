@@ -21,3 +21,8 @@ const PublicOnly = ({ children }) => {
   if (loading) return <LoadingScreen />;
   if (user) return <Navigate to="/" replace />;
   return children;
+};
+
+export default function App() {
+  return (
+    <Routes>
