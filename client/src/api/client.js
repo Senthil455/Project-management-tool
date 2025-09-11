@@ -25,14 +25,3 @@ api.interceptors.response.use(
           window.location.href = '/login';
         }
       }
-    }
-    return Promise.reject(error);
-  }
-);
-
-export const getErrorMessage = (error, fallback = 'Something went wrong') => {
-  if (error.response && error.response.data && error.response.data.message) {
-    return error.response.data.message;
-  }
-  if (error.message) return error.message;
-  return fallback;
