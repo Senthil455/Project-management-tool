@@ -48,11 +48,3 @@ export const StoreProvider = ({ children }) => {
         projects,
         projectsLoading,
         refreshProjects,
-      }}
-    >
-      {children}
-    </StoreContext.Provider>
-  );
-};
-
-export const useStore = () => useContext(StoreContext);
