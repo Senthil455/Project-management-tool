@@ -25,6 +25,3 @@ export default function Modal({ title, onClose, children, width = 700 }) {
         </div>
         <div className="modal-body">{children}</div>
       </div>
-    </div>
-  );
-}
