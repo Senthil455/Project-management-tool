@@ -73,14 +73,3 @@ export default function Dropdown({
                   setOpen(false);
                   setQuery('');
                 }}
-              >
-                {renderOption ? renderOption(opt) : <span>{opt.label}</span>}
-                {value === opt.value && <Icon name="check" className="dropdown-check" />}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
