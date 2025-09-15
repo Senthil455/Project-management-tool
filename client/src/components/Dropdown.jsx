@@ -46,30 +46,3 @@ export default function Dropdown({
           <span className={selected ? '' : 'dropdown-placeholder'}>
             {selected ? selected.label : placeholder}
           </span>
-        )}
-        <span className="dropdown-chevron">▼</span>
-      </button>
-      {open && (
-        <div className={`dropdown-menu dropdown-menu-${align}`}>
-          {searchable && (
-            <div className="dropdown-search">
-              <input
-                autoFocus
-                placeholder="Search..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-          )}
-          <div className="dropdown-options">
-            {filtered.length === 0 && <div className="dropdown-empty">No options</div>}
-            {filtered.map((opt) => (
-              <button
-                type="button"
-                key={opt.value}
-                className={`dropdown-option ${value === opt.value ? 'dropdown-option-selected' : ''}`}
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                  setQuery('');
-                }}
