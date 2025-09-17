@@ -176,4 +176,3 @@ export default function IssueModal({ issue: initialIssue, project, users, canEdi
                   <div className="inline-edit-actions">
                     <button className="btn btn-primary btn-sm" onClick={saveDesc} disabled={saving}>
                       Save
-                    </button>
