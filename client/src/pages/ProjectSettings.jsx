@@ -184,3 +184,45 @@ export default function ProjectSettings() {
                   {m.user.name}
                   {m.isLead && <span className="member-lead-badge">Lead</span>}
                   {m.user._id === user._id && <span className="member-you-badge">You</span>}
+                </strong>
+                <span>{m.user.email}</span>
+              </div>
+              {m.isLead ? (
+                <span className="member-role-static">Admin</span>
+              ) : (
+                <>
+                  <Dropdown
+                    options={PROJECT_ROLES}
+                    value={m.role}
+                    onChange={(role) => changeRole(m.user._id, role)}
+                    style={{ width: 130 }}
+                  />
+                  <button
+                    className="icon-btn"
+                    title="Remove from project"
+                    onClick={() => removeMember(m.user._id)}
+                    disabled={removingId === m.user._id}
+                  >
+                    <Icon name="trash" size={16} />
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {isLead && (
+        <div className="settings-card settings-card-danger">
+          <h3>Danger zone</h3>
+          <p>
+            Deleting this project will permanently remove it along with all of its issues.
+            This action cannot be undone.
+          </p>
+          <button className="btn btn-danger" onClick={() => setConfirmDelete(true)}>
+            Delete project
+          </button>
+        </div>
+      )}
+
+      {confirmDelete && (
