@@ -125,21 +125,3 @@ export default function ProjectLayout() {
                 </div>
               </div>
               {project.members.map((m) => (
-                <div className="project-person" key={m._id}>
-                  <Avatar user={m.user} size={24} />
-                  <div className="project-person-info">
-                    <span>{m.user.name}</span>
-                    <small>{m.role}</small>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="project-content">
-          <Outlet context={{ project, loadProject, canEdit, isAdmin, myRole }} />
-        </div>
-      </div>
-    </div>
-  );
-}
