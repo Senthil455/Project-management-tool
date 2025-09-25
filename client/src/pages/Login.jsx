@@ -62,23 +62,3 @@ export default function Login() {
             type="password"
             className="input"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-          />
-          <button className="btn btn-primary btn-block" type="submit" disabled={loading}>
-            {loading ? 'Logging in...' : 'Log in'}
-          </button>
-          <p className="auth-switch">
-            Don't have an account? <Link to="/register">Sign up</Link>
-          </p>
-          <div className="auth-demo">
-            <strong>Demo accounts</strong>
-            <p>john@demo.com · sarah@demo.com · mike@demo.com · anna@demo.com</p>
-            <p>Password: <code>password123</code></p>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
