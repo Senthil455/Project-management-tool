@@ -26,3 +26,18 @@ const PublicOnly = ({ children }) => {
 export default function App() {
   return (
     <Routes>
+      <Route
+        path="/login"
+        element={
+          <PublicOnly>
+            <Login />
+          </PublicOnly>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicOnly>
+            <Register />
+          </PublicOnly>
+        }
