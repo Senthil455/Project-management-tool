@@ -31,3 +31,19 @@ const projectSchema = new mongoose.Schema(
 projectSchema.methods.getMemberRole = function (userId) {
   if (this.lead.toString() === userId.toString()) return 'admin';
   const member = this.members.find((m) => m.user.toString() === userId.toString());
+  return member ? member.role : null;
+};
+
+projectSchema.methods.getNextIssueNumber = async function () {
+  const number = this.nextIssueNumber;
+  this.nextIssueNumber += 1;
+  await this.save();
+  return number;
+};
+
+projectSchema.methods.getIssueKey = async function (issueNumber) {
+  return `${this.key}-${issueNumber}`;
+};
+
+const Project = mongoose.model('Project', projectSchema);
+export default Project;
