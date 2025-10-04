@@ -42,3 +42,12 @@ const issueSchema = new mongoose.Schema(
     labels: [{ type: String, trim: true }],
     comments: [commentSchema],
     activity: [activitySchema],
+    order: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+issueSchema.index({ project: 1, status: 1, order: 1 });
+
+const Issue = mongoose.model('Issue', issueSchema);
+export default Issue;
