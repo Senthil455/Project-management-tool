@@ -36,3 +36,23 @@ export const StoreProvider = ({ children }) => {
     loadProjects();
   }, [loadUsers, loadProjects]);
 
+  const refreshProjects = useCallback(() => {
+    loadProjects();
+  }, [loadProjects]);
+
+  return (
+    <StoreContext.Provider
+      value={{
+        users,
+        usersLoading,
+        projects,
+        projectsLoading,
+        refreshProjects,
+      }}
+    >
+      {children}
+    </StoreContext.Provider>
+  );
+};
+
+export const useStore = () => useContext(StoreContext);
