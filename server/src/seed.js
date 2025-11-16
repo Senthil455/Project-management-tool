@@ -116,3 +116,136 @@ const seed = async () => {
     labels: ['frontend', 'forms'],
   }));
 
+  created.push(await mkIssue(web, 4, {
+    title: 'Write copy for About page',
+    description: 'Draft the new about page copy based on the brand tone guidelines.',
+    type: 'task',
+    status: 'todo',
+    priority: 'low',
+    assignee: anna._id,
+    reporter: john._id,
+    storyPoints: 2,
+    labels: ['content'],
+  }));
+
+  created.push(await mkIssue(web, 5, {
+    title: 'Migrate to new CMS',
+    description: 'Epic: move all site content to the new headless CMS.',
+    type: 'epic',
+    status: 'todo',
+    priority: 'medium',
+    assignee: null,
+    reporter: john._id,
+    storyPoints: null,
+    labels: ['infrastructure'],
+  }));
+
+  created.push(await mkIssue(mob, 1, {
+    title: 'Set up push notifications',
+    description: 'Configure push notifications for task reminders and mentions.',
+    type: 'task',
+    status: 'done',
+    priority: 'high',
+    assignee: john._id,
+    reporter: sarah._id,
+    storyPoints: 5,
+    labels: ['mobile', 'backend'],
+  }));
+
+  created.push(await mkIssue(mob, 2, {
+    title: 'App crashes on iOS 17',
+    description: 'Users report a crash when opening the profile screen on iOS 17 devices.',
+    type: 'bug',
+    status: 'inprogress',
+    priority: 'highest',
+    assignee: mike._id,
+    reporter: anna._id,
+    storyPoints: 8,
+    labels: ['ios', 'bug'],
+  }));
+
+  created.push(await mkIssue(mob, 3, {
+    title: 'Add offline mode',
+    description: 'Allow users to browse cached content while offline.',
+    type: 'story',
+    status: 'todo',
+    priority: 'medium',
+    assignee: sarah._id,
+    reporter: sarah._id,
+    storyPoints: 8,
+    labels: ['mobile'],
+  }));
+
+  created.push(await mkIssue(mob, 4, {
+    title: 'Implement dark mode',
+    description: 'Add dark mode support with automatic theme detection.',
+    type: 'story',
+    status: 'todo',
+    priority: 'low',
+    assignee: null,
+    reporter: john._id,
+    storyPoints: 5,
+    labels: ['design', 'mobile'],
+  }));
+
+  created.push(await mkIssue(mkt, 1, {
+    title: 'Design social media creatives',
+    description: 'Create the visual assets for the Q3 campaign across all social channels.',
+    type: 'task',
+    status: 'inprogress',
+    priority: 'high',
+    assignee: sarah._id,
+    reporter: anna._id,
+    storyPoints: 3,
+    labels: ['design'],
+  }));
+
+  created.push(await mkIssue(mkt, 2, {
+    title: 'Schedule email newsletter',
+    description: 'Draft and schedule the launch newsletter for the campaign.',
+    type: 'task',
+    status: 'todo',
+    priority: 'medium',
+    assignee: anna._id,
+    reporter: anna._id,
+    storyPoints: 2,
+    labels: ['email'],
+  }));
+
+  created.push(await mkIssue(mkt, 3, {
+    title: 'Track campaign analytics',
+    description: 'Set up analytics dashboards to track campaign performance.',
+    type: 'task',
+    status: 'todo',
+    priority: 'low',
+    assignee: null,
+    reporter: john._id,
+    storyPoints: 3,
+    labels: ['analytics'],
+  }));
+
+  console.log(`Created ${created.length} issues.`);
+
+  const projectIssueCounts = await Issue.aggregate([
+    { $group: { _id: '$project', count: { $sum: 1 } } },
+  ]);
+  for (const c of projectIssueCounts) {
+    await Project.updateOne(
+      { _id: c._id },
+      { $set: { nextIssueNumber: c.count + 1 } }
+    );
+  }
+
+  console.log('Seed complete!');
+  console.log('Demo accounts (password for all): password123');
+  console.log('  john@demo.com  - John Carter');
+  console.log('  sarah@demo.com - Sarah Kim');
+  console.log('  mike@demo.com  - Mike Torres');
+  console.log('  anna@demo.com  - Anna Patel');
+  await mongoose.disconnect();
+};
+
+seed().catch((err) => {
+  console.error('Seed failed:', err);
+  process.exit(1);
+});
