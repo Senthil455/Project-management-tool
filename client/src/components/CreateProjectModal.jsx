@@ -60,3 +60,32 @@ export default function CreateProjectModal({ onClose, onCreated }) {
           className="input"
           value={key}
           onChange={(e) => setKey(e.target.value.toUpperCase())}
+          placeholder="WEB"
+          maxLength={10}
+          required
+          pattern="[A-Za-z0-9]{2,10}"
+          title="2-10 letters or numbers"
+        />
+        <p className="form-hint">
+          Unique key used in issue keys (e.g. issues will be WEB-1, WEB-2...)
+        </p>
+        <label className="form-label">Description</label>
+        <textarea
+          className="textarea"
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="What is this project about?"
+        />
+        <div className="form-actions">
+          <button type="button" className="btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? 'Creating...' : 'Create project'}
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
