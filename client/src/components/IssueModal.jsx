@@ -203,3 +203,230 @@ export default function IssueModal({ issue: initialIssue, project, users, canEdi
                 Comments ({issue.comments.length})
                 <Icon name="comment" size={14} className="section-icon" />
               </h4>
+              {canEdit && (
+                <form className="comment-form" onSubmit={addComment}>
+                  <Avatar user={project.lead} size={28} />
+                  <div className="comment-input-wrap">
+                    <textarea
+                      className="textarea comment-input"
+                      rows={2}
+                      placeholder="Add a comment..."
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                    />
+                    {comment.trim() && (
+                      <div className="comment-form-actions">
+                        <button type="submit" className="btn btn-primary btn-sm" disabled={commenting}>
+                          {commenting ? 'Posting...' : 'Save'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </form>
+              )}
+              <div className="comment-list">
+                {issue.comments.length === 0 && (
+                  <p className="issue-placeholder">No comments yet.</p>
+                )}
+                {issue.comments.map((c) => (
+                  <div className="comment" key={c._id}>
+                    <Avatar user={c.author} size={28} />
+                    <div className="comment-content">
+                      <div className="comment-meta">
+                        <strong>{c.author.name}</strong>
+                        <span>{formatDateTime(c.createdAt)}</span>
+                      </div>
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{c.body}</p>
+                    </div>
+                    {canEdit && (
+                      <button
+                        className="icon-btn comment-delete"
+                        title="Delete comment"
+                        onClick={() => deleteComment(c._id)}
+                      >
+                        <Icon name="trash" size={14} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="issue-section">
+              <h4>Activity</h4>
+              <div className="activity-list">
+                {[...issue.activity].reverse().map((a, idx) => (
+                  <div className="activity-item" key={a._id || idx}>
+                    <Avatar user={a.user} size={24} />
+                    <div className="activity-content">
+                      <span>
+                        <strong>{a.user.name}</strong> {activityText(a)}
+                      </span>
+                      <small>{formatDateTime(a.createdAt)}</small>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="issue-modal-side">
+            <Field label="Status">
+              {canEdit ? (
+                <Dropdown
+                  options={ISSUE_STATUSES}
+                  value={issue.status}
+                  onChange={(v) => handlePatch({ status: v })}
+                  renderOption={(o) => (
+                    <span className="dropdown-option-row">
+                      <span className={`status-dot status-dot-${o.value}`} />
+                      {o.label}
+                    </span>
+                  )}
+                />
+              ) : (
+                <span className={`status-badge status-badge-${issue.status}`}>
+                  {getStatus(issue.status).label}
+                </span>
+              )}
+            </Field>
+            <Field label="Assignee">
+              {canEdit ? (
+                <Dropdown
+                  options={[{ value: '', label: 'Unassigned' }, ...users.map(userOption)]}
+                  value={issue.assignee ? issue.assignee._id : ''}
+                  onChange={(v) => handlePatch({ assignee: v || null })}
+                  renderOption={(o) => {
+                    const u = findUser(o.value);
+                    return (
+                      <span className="dropdown-option-row">
+                        <Avatar user={u} size={20} />
+                        {o.label}
+                      </span>
+                    );
+                  }}
+                />
+              ) : issue.assignee ? (
+                <Avatar user={issue.assignee} size={24} showName />
+              ) : (
+                'Unassigned'
+              )}
+            </Field>
+            <Field label="Reporter">
+              <Avatar user={issue.reporter} size={24} showName />
+            </Field>
+            <Field label="Priority">
+              {canEdit ? (
+                <Dropdown
+                  options={ISSUE_PRIORITIES}
+                  value={issue.priority}
+                  onChange={(v) => handlePatch({ priority: v })}
+                  renderOption={(o) => (
+                    <span className="dropdown-option-row">
+                      <PriorityFlag priority={o.value} size={14} />
+                      {o.label}
+                    </span>
+                  )}
+                />
+              ) : (
+                <span className="dropdown-option-row">
+                  <PriorityFlag priority={issue.priority} size={14} />
+                  {getPriority(issue.priority).label}
+                </span>
+              )}
+            </Field>
+            <Field label="Issue type">
+              {canEdit ? (
+                <Dropdown
+                  options={ISSUE_TYPES}
+                  value={issue.type}
+                  onChange={(v) => handlePatch({ type: v })}
+                  renderOption={(o) => (
+                    <span className="dropdown-option-row">
+                      <TypeIcon type={o.value} size={14} />
+                      {o.label}
+                    </span>
+                  )}
+                />
+              ) : (
+                <span className="dropdown-option-row">
+                  <TypeIcon type={issue.type} size={14} /> {issue.type}
+                </span>
+              )}
+            </Field>
+            <Field label="Story points">
+              {canEdit ? (
+                <input
+                  type="number"
+                  min="0"
+                  className="input"
+                  value={issue.storyPoints ?? ''}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v === '') handlePatch({ storyPoints: null });
+                    else handlePatch({ storyPoints: Number(v) });
+                  }}
+                />
+              ) : (
+                issue.storyPoints ?? '—'
+              )}
+            </Field>
+            {issue.labels.length > 0 && (
+              <Field label="Labels">
+                <div className="issue-labels">
+                  {issue.labels.map((l) => (
+                    <span className="issue-label" key={l}>
+                      {l}
+                    </span>
+                  ))}
+                </div>
+              </Field>
+            )}
+            {canEdit && (
+              <div className="issue-danger">
+                <button className="btn btn-danger-outline btn-sm" onClick={() => setConfirmDelete(true)}>
+                  <Icon name="trash" size={14} />
+                  Delete issue
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {confirmDelete && (
+        <ConfirmDialog
+          title="Delete issue"
+          message={`Are you sure you want to delete ${issue.key}? This cannot be undone.`}
+          confirmLabel="Delete issue"
+          onConfirm={deleteIssue}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+const activityText = (a) => {
+  const value = (v) => (v ? `"${v}"` : 'empty');
+  switch (a.action) {
+    case 'created':
+      return 'created this issue';
+    case 'commented':
+      return 'commented on this issue';
+    case 'deleted':
+      return 'deleted this issue';
+    case 'updated':
+      if (a.field === 'status') {
+        return `moved issue from ${value(a.oldValue)} to ${value(a.newValue)}`;
+      }
+      if (a.field === 'assignee') {
+        if (a.newValue) return `assigned issue to ${a.newValue}`;
+        if (a.oldValue) return `unassigned issue`;
+        return 'changed assignee';
+      }
+      return `changed ${a.field} from ${value(a.oldValue)} to ${value(a.newValue)}`;
+    default:
+      return 'updated this issue';
+  }
+};
