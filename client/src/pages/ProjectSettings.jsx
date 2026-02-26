@@ -226,3 +226,14 @@ export default function ProjectSettings() {
       )}
 
       {confirmDelete && (
+        <ConfirmDialog
+          title="Delete project"
+          message={`Are you sure you want to delete "${project.name}"? All of its issues will be permanently deleted.`}
+          confirmLabel="Delete project"
+          onConfirm={deleteProject}
+          onCancel={() => setConfirmDelete(false)}
+        />
+      )}
+    </div>
+  );
+}
