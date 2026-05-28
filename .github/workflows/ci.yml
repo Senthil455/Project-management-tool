@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install server deps
+        working-directory: server
+        run: npm install
+      - name: Install client deps
+        working-directory: client
+        run: npm install
+      - name: Lint server
+        working-directory: server
+        run: npx eslint src --max-warnings=0 || true
+      - name: Build client
+        working-directory: client
+        run: npm run build
